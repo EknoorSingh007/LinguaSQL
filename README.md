@@ -1,134 +1,113 @@
-# 🧠 LLM-Powered SQL Database Interface
+# LinguaSQL — LLM-Powered SQL Database Interface
 
-This is a Natural Language Interface to a SQL database, powered by a Large Language Model (LLM). It allows users to **create tables**, **insert data**, **query**, **update**, and **delete** records using plain English commands.
-
----
-
-## ✨ Features
-
-- ✅ Natural language to SQL conversion using LLM
-- ✅ SQLite backend for persistence
-- ✅ View and edit tables using a web UI
-- ✅ Dynamic schema creation via NLQ
-- ✅ Query results displayed in a clean tabular format
-- ✅ Edit and delete rows from UI
-- ✅ Works entirely locally
+A Natural Language Interface to a SQL database, powered by a fine-tuned Large Language Model. Type plain English — LinguaSQL converts it to SQL and executes it against a live SQLite database.
 
 ---
 
-## 📂 Project Structure
+## Features
+
+- Natural language to SQL conversion using a fine-tuned LLM
+- SQLite backend for persistence
+- Schema-aware prompting — model is given the live database schema at inference time
+- Web UI to view, filter, and manage tables
+- Supports CREATE, INSERT, SELECT, UPDATE, DELETE via natural language
+- Runs locally — no external API calls
+
+---
+
+## Project Structure
 
 ```
-LLM_DBMS/
-│
-├── backend/                 # FastAPI backend
-│   ├── main.py              # Core API endpoints
-│   ├── db/engine.py         # SQL handling (insert, find, delete)
-│   ├── llm_interface.py     # Sends prompts to LLM server
-│   └── llm_server.py        # Local LLM inference endpoint
-│
-├── flask_ui/                # Flask + Jinja2 frontend
-│   ├── app.py               # Routes and rendering
-│   └── templates/           # HTML templates
-│       ├── base.html
-│       ├── index.html
-│       ├── nlq.html
-│       └── view.html
-│
-└── README.md                # This file
+LinguaSQL/
+├── backend/
+│   ├── main.py              # FastAPI — query endpoints + schema fetching
+│   ├── llm_interface.py     # Prompt construction + SQL extraction
+│   ├── llm_server.py        # LLM inference server (GPU with 8-bit / CPU fallback)
+│   └── db/
+│       ├── engine.py        # SQLAlchemy CRUD operations
+│       └── database.py      # DB connection
+├── flask_ui/
+│   ├── app.py               # Flask routes
+│   └── templates/           # Jinja2 HTML templates
+├── models/
+│   └── finetune.py          # Fine-tuning script (Google Colab)
+└── requirements.txt
 ```
 
 ---
 
-## 🚀 Getting Started
-
-### 1. Set up the environment
+## Setup
 
 ```bash
-conda create -n tfgpu python=3.10
-conda activate tfgpu
 pip install -r requirements.txt
 ```
 
-Make sure your `requirements.txt` includes:
-
-```txt
-fastapi
-uvicorn
-flask
-jinja2
-requests
-sqlite3       # comes built-in
-transformers
-torch
-```
-
----
-
-### 2. Start the LLM server
+Run three services simultaneously:
 
 ```bash
-cd backend
-python llm_server.py
-```
+# Terminal 1 — LLM inference server (port 8080)
+python backend/llm_server.py
 
-This will launch the text generation model (e.g., GPT2 or similar).
-
----
-
-### 3. Start the FastAPI backend
-
-```bash
+# Terminal 2 — FastAPI backend (port 8000)
 uvicorn backend.main:app --reload --port 8000
+
+# Terminal 3 — Flask frontend (port 5000)
+python flask_ui/app.py
+```
+
+Visit **http://localhost:5000**
+
+---
+
+## Fine-tuning
+
+The model is fine-tuned on the `gretelai/synthetic_text_to_sql` dataset using **8-bit quantization + LoRA (PEFT)** via Google Colab (T4 GPU).
+
+See `models/finetune.py` for the full training script.
+
+---
+
+## Example Prompts
+
+```
+Create a table called students with name, age, and city.
+Insert a student named Eknoor, age 21, from Ganganagar.
+Show all students from Ganganagar.
+Delete all students older than 30.
 ```
 
 ---
 
-### 4. Start the Flask frontend
+## How It Works
 
-```bash
-cd flask_ui
-python app.py
+```
+Natural language input
+        ↓
+llm_interface.py  →  builds prompt with live DB schema
+        ↓
+llm_server.py     →  fine-tuned GPT-2 generates SQL
+        ↓
+main.py           →  executes SQL on SQLite
+        ↓
+Flask UI          →  displays results
 ```
 
-Visit: [http://localhost:5000](http://localhost:5000)
+---
+
+## Tech Stack
+
+| Layer       | Technology                         |
+|-------------|------------------------------------|
+| LLM         | Fine-tuned GPT-2 (HuggingFace)     |
+| Fine-tuning | 8-bit quantization + LoRA (PEFT)   |
+| Backend     | FastAPI + SQLite                   |
+| Frontend    | Flask + Jinja2                     |
+| Dataset     | gretelai/synthetic_text_to_sql     |
 
 ---
 
-## 🧪 Example Prompts
+## Collaborators
 
-Try these in the **NLQ page**:
-
-- `Create a table called users with name, age, and city.`
-- `Insert a user named Alice, 25 years old, from Delhi.`
-- `Show all users from Delhi.`
-- `Delete all users over 60 years old.`
-
----
-
-## 💡 How it Works
-
-1. You enter a **natural language prompt**
-2. `llm_interface.py` converts it to SQL using the LLM
-3. `main.py` parses and executes it using `sqlite3`
-4. Results are returned and displayed in a table
-
----
-
-## 📌 Notes
-
-- This is a prototype, not production-ready.
-- You can fine-tune your own LLM to improve prompt-to-SQL accuracy.
-- Add authentication if deploying publicly.
-
----
-
-## 📷 Screenshots
-
-> Add screenshots of the UI here
-
----
-
-## 📃 License
-
-MIT License
+- Eknoor Singh
+- Vipul
+- Tarun Gupta

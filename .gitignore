@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Database files (don't push your personal data)
+*.db
+*.sqlite
+
+# HuggingFace token / secrets
+.env
+
+# Training outputs
+outputs/runs/
+
+# User data
+data/users/
+
+# VS Code / IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

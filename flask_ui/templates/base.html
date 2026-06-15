@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+  <head>
+    <title>LinguaSQL</title>
+    <style>
+      body {
+        background: #121212;
+        color: #e0e0e0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .content-wrapper {
+        width: 100%;
+        max-width: 960px;
+        padding: 1rem;
+        box-sizing: border-box;
+      }
+
+      .nav {
+        width: 100%;
+        background: linear-gradient(90deg, #4B0082, #8A2BE2);
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        align-items: center;
+      }
+      .nav-brand {
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        margin-right: auto;
+        padding-left: 1rem;
+        text-decoration: none;
+      }
+      .nav a {
+        color: #ffffff;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      .nav a:hover {
+        opacity: 0.8;
+      }
+
+      #loading-spinner {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 1rem 1.5rem;
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        border-radius: 8px;
+        font-size: 1.1rem;
+      }
+
+      button {
+        background: linear-gradient(90deg, #8A2BE2, #4B0082);
+        border: none;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+      button:hover {
+        opacity: 0.85;
+      }
+
+      input[type="text"] {
+        background: #1e1e1e;
+        border: 1px solid #333;
+        color: #e0e0e0;
+        padding: 0.5rem;
+        border-radius: 4px;
+        width: 100%;
+      }
+      input::placeholder {
+        color: #888;
+      }
+
+      .table-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      .table-card {
+        background: #1e1e1e;
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        text-align: center;
+        transition: transform 0.1s, box-shadow 0.1s;
+        animation: fadeIn 0.5s ease forwards;
+      }
+      .table-card a {
+        color: #8A2BE2;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .table-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.7);
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      th {
+        background: #2a2a2a;
+        padding: 0.75rem;
+        text-align: left;
+        font-size: 0.95rem;
+      }
+      td {
+        background: #1e1e1e;
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+      tr:nth-child(even) td {
+        background: #262626;
+      }
+      tr:hover td {
+        background: #333 !important;
+        transition: background 0.2s;
+      }
+
+      .flash-success, .flash-error {
+        font-size: 1rem;
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+      }
+      .flash-success { background: #006400; color: #fff; }
+      .flash-error   { background: #8b0000; color: #fff; }
+
+      body { line-height: 1.6; }
+      h2 { font-size: 1.75rem; margin: 1.5rem 0 0.75rem; }
+      h3 { font-size: 1.5rem;  margin: 1.25rem 0 0.5rem; }
+    </style>
+
+    <script src="{{ url_for('static', filename='loading.js') }}"></script>
+    <script src="{{ url_for('static', filename='filter.js') }}"></script>
+    <script src="{{ url_for('static', filename='tooltip.js') }}"></script>
+  </head>
+  <body>
+    <div id="loading-spinner">Loading…</div>
+
+    <div class="nav">
+      <span class="nav-brand">&#128172; LinguaSQL</span>
+      <a href="{{ url_for('index') }}">&#128203; Tables</a>
+      <a href="{{ url_for('nlq') }}">&#129504; NLQ</a>
+      <button id="new-table-btn">+ New Table</button>
+    </div>
+
+    <div class="content-wrapper">
+      {% with messages = get_flashed_messages(with_categories=True) %}
+        {% for category, msg in messages %}
+          <div class="flash-{{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
+
+    <script src="{{ url_for('static', filename='loading.js') }}"></script>
+    <script src="{{ url_for('static', filename='filter.js') }}"></script>
+    <script src="{{ url_for('static', filename='tooltip.js') }}"></script>
+    <script src="{{ url_for('static', filename='newtable.js') }}"></script>
+  </body>
+</html>

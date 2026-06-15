@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>📄 Table: {{ collection }}</h2>
+
+  {% if documents %}
+    <table>
+      <thead>
+        <tr>
+          {% for col in columns %}
+            <th>{{ col }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in documents %}
+          <tr>
+            {% for col in columns %}
+              <td>{{ row[col] }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p>
+      Page {{ page }} of {{ pages }}
+      {% if skip >= limit %}
+        <a href="?skip={{ skip - limit }}">⟵ Prev</a>
+      {% endif %}
+      {% if skip + limit < total %}
+        <a href="?skip={{ skip + limit }}">Next ⟶</a>
+      {% endif %}
+    </p>
+  {% else %}
+    <p>No data to display.</p>
+  {% endif %}
+{% endblock %}
