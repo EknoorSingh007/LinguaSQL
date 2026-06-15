@@ -61,9 +61,9 @@ Visit **http://localhost:5000**
 
 ## Fine-tuning
 
-The model is fine-tuned on the `gretelai/synthetic_text_to_sql` dataset using **8-bit quantization + LoRA (PEFT)** via Google Colab (T4 GPU).
+The LLM is fine-tuned on a text-to-SQL dataset using parameter-efficient techniques (LoRA + quantization) to reduce compute requirements. Training can be done on a free cloud GPU (e.g. Google Colab T4). A larger base model or more training steps will improve SQL accuracy.
 
-See `models/finetune.py` for the full training script.
+See `models/finetune.py` for the training script.
 
 ---
 
