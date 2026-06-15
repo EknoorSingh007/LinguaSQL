@@ -61,7 +61,7 @@ Visit **http://localhost:5000**
 
 ## Fine-tuning
 
-The LLM is fine-tuned on a text-to-SQL dataset using parameter-efficient techniques (LoRA + quantization) to reduce compute requirements. Training can be done on a free cloud GPU (e.g. Google Colab T4). A larger base model or more training steps will improve SQL accuracy.
+The LLM is fine-tuned using **LoRA + 8-bit quantization (PEFT)**, making it trainable on limited hardware. We recommend using a cloud GPU for training. Accuracy improves with a larger base model or more training steps.
 
 See `models/finetune.py` for the training script.
 
@@ -102,7 +102,6 @@ Flask UI          →  displays results
 | Fine-tuning | 8-bit quantization + LoRA (PEFT)   |
 | Backend     | FastAPI + SQLite                   |
 | Frontend    | Flask + Jinja2                     |
-| Dataset     | gretelai/synthetic_text_to_sql     |
 
 ---
 
